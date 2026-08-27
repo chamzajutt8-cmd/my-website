@@ -1,161 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AURAMART - Online Shopping</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f9;
-      color: #333;
-    }
-    header {
-      background-color: #1e293b;
-      color: #fff;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    header h1 { font-size: 1.8rem; letter-spacing: 1px; }
-    header nav a {
-      color: #94a3b8;
-      text-decoration: none;
-      margin-left: 20px;
-      font-weight: 500;
-    }
-    header nav a:hover { color: #fff; }
-    
-    .hero {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      color: white;
-      text-align: center;
-      padding: 50px 20px;
-    }
-    .hero h2 { font-size: 2.2rem; margin-bottom: 10px; }
-    .hero p { font-size: 1.1rem; opacity: 0.9; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Mart — Online Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --orange:#F85606;
+    --orange-dark:#D94900;
+    --orange-light:#FFF1E8;
+    --yellow:#FFC300;
+    --ink:#1A1A1A;
+    --grey:#767676;
+    --grey-light:#F4F4F4;
+    --line:#E9E9E9;
+    --white:#FFFFFF;
+  }
 
-    .main-container {
-      max-width: 1280px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      color: #0f172a;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 10px;
-    }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+  body { background: #f8f8f8; color: var(--ink); }
 
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 24px;
-    }
+  /* Modals */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-card h2 { margin-bottom: 15px; color: var(--ink); text-align: center; }
+  .modal-card label { display: block; margin: 10px 0 5px; font-size: 13px; color: var(--grey); font-weight: 600; }
+  .modal-card input, .modal-card textarea, .modal-card select { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 4px; outline: none; font-size: 14px; }
+  .modal-card input:focus, .modal-card textarea:focus { border-color: var(--orange); }
+  .modal-card button[type="submit"] { width: 100%; margin-top: 20px; padding: 12px; background: var(--orange); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
+  .modal-card button[type="submit"]:hover { background: var(--orange-dark); }
+  .close-btn { position: absolute; top: 12px; right: 15px; font-size: 22px; cursor: pointer; border: none; background: none; color: var(--grey); }
 
-    .product-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-    }
-    .product-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      background-color: #cbd5e1;
-    }
-    .card-body {
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-    }
-    .product-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #1e293b;
-      margin-bottom: 8px;
-    }
-    .product-price {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #2563eb;
-      margin-bottom: 12px;
-    }
-    .add-btn {
-      width: 100%;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .add-btn:hover { background-color: #1d4ed8; }
-  </style>
+  /* Cart Side Drawer */
+  .cart-drawer {
+    position: fixed;
+    top: 0; right: -400px; width: 380px; height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+    z-index: 10000;
+    transition: right 0.3s ease;
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.open { right: 0; }
+  .cart-header { padding: 20px; background: var(--orange); color: #fff; display: flex; justify-content: space-between; align-items: center; }
+  .cart-body { flex: 1; padding: 20px; overflow-y: auto; }
+  .cart-item { display: flex; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 10px; align-items: center; }
+  .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+  .cart-item-details { flex: 1; }
+  .cart-item-title { font-size: 13px; font-weight: 600; }
+  .cart-item-price { color: var(--orange); font-size: 14px; font-weight: 700; }
+  .cart-footer { padding: 20px; border-top: 1px solid var(--line); background: #fafafa; }
+  .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; margin-bottom: 15px; }
+  .checkout-btn { width: 100%; padding: 12px; background: var(--orange); color: #fff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; }
+
+  /* Navigation Header */
+  .top-bar { background: #111; color: #ccc; font-size: 12px; padding: 6px 5%; display: flex; justify-content: space-between; }
+  header { background: var(--orange); padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; gap: 20px; position: sticky; top: 0; z-index: 100; }
+  .logo { color: var(--white); font-weight: 800; font-size: 24px; text-decoration: none; cursor: pointer; }
+  .search-box { flex: 1; max-width: 600px; display: flex; background: var(--white); border-radius: 4px; overflow: hidden; }
+  .search-box input { flex: 1; border: none; padding: 10px 15px; outline: none; font-size: 14px; }
+  .search-box button { background: var(--orange-dark); border: none; color: var(--white); padding: 0 20px; cursor: pointer; }
+  .nav-icons { display: flex; gap: 20px; color: var(--white); }
+  .nav-icon-item { text-align: center; color: var(--white); text-decoration: none; font-size: 12px; position: relative; cursor: pointer; }
+  .nav-icon-item i { font-size: 20px; display: block; margin-bottom: 2px; }
+  .cart-badge { position: absolute; top: -5px; right: 5px; background: var(--yellow); color: var(--ink); border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
+
+  /* Hero & Categories */
+  .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80'); background-size: cover; color: var(--white); padding: 60px 5%; text-align: center; }
+  .hero h1 { font-size: 36px; margin-bottom: 10px; }
+  .hero p { font-size: 16px; margin-bottom: 20px; }
+  .hero button { background: var(--orange); color: var(--white); border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; }
+
+  .categories { display: flex; gap: 10px; padding: 15px 5%; background: var(--white); border-bottom: 1px solid var(--line); overflow-x: auto; }
+  .category-btn { padding: 8px 16px; border: 1px solid var(--line); border-radius: 20px; background: none; cursor: pointer; white-space: nowrap; font-weight: 500; }
+  .category-btn.active { background: var(--orange); color: var(--white); border-color: var(--orange); }
+
+  /* Product Grid */
+  .container { padding: 30px 5%; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .card { background: var(--white); border-radius: 8px; border: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+  .card img { width: 100%; height: 180px; object-fit: cover; }
+  .card-details { padding: 15px; }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .card-price { color: var(--orange); font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .card button { width: 100%; padding: 10px; background: var(--orange-light); color: var(--orange-dark); border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
+  .card button:hover { background: var(--orange); color: var(--white); }
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>AURAMART</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Products</a>
-      <a href="#">Cart</a>
-    </nav>
-  </header>
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</button>
+    <h2>Account Login</h2>
+    <form id="loginForm" onsubmit="event.preventDefault(); alert('Logged in successfully!'); document.getElementById('loginModal').style.display='none';">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+      <button type="submit">Sign In</button>
+    </form>
+  </div>
+</div>
 
-  <section class="hero">
-    <h2>Welcome to AURAMART Store</h2>
-    <p>Discover 100+ exclusive deals on top-quality items!</p>
-  </section>
+<div id="checkoutModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="close-btn" onclick="document.getElementById('checkoutModal').style.display='none'">&times;</button>
+    <h2>Delivery Location & Checkout</h2>
+    <form id="checkoutForm" onsubmit="handleOrderSubmit(event)">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" placeholder="John Doe" required>
+      
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="0300-1234567" required>
+      
+      <label for="city">City</label>
+      <select id="city" required>
+        <option value="Lahore">Lahore</option>
+        <option value="Karachi">Karachi</option>
+        <option value="Islamabad">Islamabad</option>
+        <option value="Rawalpindi">Rawalpindi</option>
+        <option value="Faisalabad">Faisalabad</option>
+      </select>
 
-  <main class="main-container">
-    <h3 class="section-title">All Products (100 Items)</h3>
-    <div class="products-grid" id="products-grid"></div>
-  </main>
+      <label for="address">Full Delivery Address</label>
+      <textarea id="address" rows="3" placeholder="House/Flat No, Street, Area..." required></textarea>
 
-  <script>
-    const container = document.getElementById('products-grid');
-    const categories = ['Electronics', 'Fashion', 'Home', 'Gadgets', 'Accessories'];
+      <label for="payment">Payment Method</label>
+      <select id="payment">
+        <option value="cod">Cash on Delivery (COD)</option>
+        <option value="card">Credit / Debit Card</option>
+      </select>
+      
+      <button type="submit">Confirm Order</button>
+    </form>
+  </div>
+</div>
 
-    // Dynamically insert 100 items into the exact original design grid
-    for (let i = 1; i <= 100; i++) {
-      const category = categories[i % categories.length];
-      const price = (Math.floor(Math.random() * 180) + 12.99).toFixed(2);
-      const imageUrl = `https://picsum.photos/seed/${i}/220/180`;
+<div id="cartDrawer" class="cart-drawer">
+  <div class="cart-header">
+    <h3>Shopping Cart</h3>
+    <button class="close-btn" style="color:#fff;" onclick="toggleCart(false)">&times;</button>
+  </div>
+  <div class="cart-body" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cartTotal">Rs 0</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
 
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        <img src="${imageUrl}" alt="${category} Item ${i}" loading="lazy" />
-        <div class="card-body">
-          <div>
-            <div class="product-title">AURAMART ${category} #${i}</div>
-            <div class="product-price">$${price}</div>
-          </div>
-          <button class="add-btn">Add to Cart</button>
-        </div>
-      `;
-      container.appendChild(card);
-    }
-  </script>
+<div class="top-bar">
+  <span>Deliver to: Pakistan</span>
+  <div><span>Track Order</span> | <span>Help Center</span></div>
+</div>
 
+<header>
+  <a class="logo" id="logo">AURAMART</a>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search for earbuds, jackets, electronics...">
+    <button><i class="fa fa-search"></i></button>
+  </div>
+  <div class="nav-icons">
+    <a href="#" class="nav-icon-item" onclick="document.getElementById('loginModal').style.display='flex'; return false;">
+      <i class="fa-regular fa-user"></i>
+      Account
+    </a>
+    <a href="#" class="nav-icon-item" onclick="toggleCart(true); return false;">
+      <i class="fa-solid fa-cart-shopping"></i>
+      Cart
+      <span class="cart-badge" id="cartBadge">0</span>
+    </a>
+  </div>
+</header>
+
+<div class="categories">
+  <button class="category-btn active" onclick="setCategory('all')">All Categories</button>
+  <button class="category-btn" onclick="setCategory('electronics')">Electronics</button>
+  <button class="category-btn" onclick="setCategory('audio')">Earbuds & Audio</button>
+  <button class="category-btn" onclick="setCategory('clothing')">Jackets & Outerwear</button>
+  <button class="category-btn" onclick="setCategory('footwear')">Footwear</button>
+</div>
+
+<section class="hero">
+  <h1>Up to 60% off Electronics & Jackets</h1>
+  <p>Free shipping on orders over Rs 3,000. Limited time only.</p>
+  <button id="heroCta">Shop the Sale</button>
+</section>
+
+<div class="container" id="shop">
+  <div class="grid" id="productGrid"></div>
+</div>
+
+<script>
+const products = [
+  { id: 1, title: 'Wireless Noise Canceling Earbuds', price: 1990, category: 'audio', img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80' },
+  { id: 2, title: 'Men Lightweight Puffer Jacket', price: 3490, category: 'clothing', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=500&q=80' },
+  { id: 3, title: 'Smart Fitness Watch Series 5', price: 4990, category: 'electronics', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80' },
+  { id: 4, title: 'Over-Ear Gaming Headset', price: 2800, category: 'audio', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80' },
+  { id: 5, title: 'Winter Fleece Denim Jacket', price: 4200, category: 'clothing', img: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=500&q=80' },
+  { id: 6, title: 'Pro Running Sport Sneakers', price: 3800, category: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80' },
+  { id: 7, title: 'Bluetooth Mini Soundbar Speaker', price: 2500, category: 'audio', img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80' },
+  { id: 8, title: 'Casual Leather Bomber Jacket', price: 5990, category: 'clothing', img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80' }
+];
+
+let cart = [];
+
+const productGrid = document.getElementById('productGrid');
+const searchInput = document.getElementById('searchInput');
+
+function renderProducts(list) {
+  productGrid.innerHTML = list.map(p => `
+    <div class="card">
+      <img src="${p.img}" alt="${p.title}">
+      <div class="card-details">
+        <div class="card-title">${p.title}</div>
+        <div class="card-price">Rs ${p.price.toLocaleString()}</div>
+        <button onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addToCart(id) {
+  const item = products.find(p => p.id === id);
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...item, qty: 1 });
+  }
+  updateCartUI();
+  toggleCart(true);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const cartItemsContainer = document.getElementById('cartItems');
+  const cartBadge = document.getElementById('cartBadge');
+  const cartTotal = document.getElementById('cartTotal');
+
+  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  cartBadge.textContent = totalCount;
+  cartTotal.textContent = `Rs ${totalPrice.toLocaleString()}`;
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = '<p style="text-align:center; color:#777; margin-top:20px;">Your cart is empty.</p>';
+    return;
+  }
+
+  cartItemsContainer.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.img}" alt="${item.title}">
+      <div class="cart-item-details">
+        <div class="cart-item-title">${item.title}</div>
+        <div class="cart-item-price">Rs ${item.price.toLocaleString()} x ${item.qty}</div>
+      </div>
+      <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fa fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+function toggleCart(open) {
+  const drawer = document.getElementById('cartDrawer');
+  if (open) drawer.classList.add('open');
+  else drawer.classList.remove('open');
+}
+
+function openCheckout() {
+  if (cart.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
+  toggleCart(false);
+  document.getElementById('checkoutModal').style.display = 'flex';
+}
+
+function handleOrderSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('fullname').value;
+  const city = document.getElementById('city').value;
+  alert(`Thank you ${name}! Your order has been placed successfully and will be delivered to ${city}.`);
+  cart = [];
+  updateCartUI();
+  document.getElementById('checkoutModal').style.display = 'none';
+}
+
+function setCategory(cat) {
+  document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+  if (cat === 'all') {
+    renderProducts(products);
+  } else {
+    renderProducts(products.filter(p => p.category === cat));
+  }
+}
+
+// Listeners
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  renderProducts(products.filter(p => p.title.toLowerCase().includes(query)));
+});
+
+document.getElementById('logo').addEventListener('click', () => {
+  searchInput.value = '';
+  setCategory('all');
+});
+
+document.getElementById('heroCta').addEventListener('click', () => {
+  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+});
+
+renderProducts(products);
+</script>
 </body>
 </html>
