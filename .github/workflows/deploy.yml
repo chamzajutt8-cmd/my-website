@@ -11,12 +11,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Verify index.html Exists & Contains Content
+      - name: Verify index.html Exists
         run: |
           if grep -q "AURAMART" index.html; then
-            echo "Smoke test passed: Brand title found."
+            echo "Smoke test passed."
           else
-            echo "Smoke test failed: Brand title missing." && exit 1
+            echo "Smoke test failed." && exit 1
           fi
 
   build-and-push:
@@ -29,7 +29,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: chamzajutt8-cmd
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up Docker Buildx
@@ -41,5 +41,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/my-website:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/my-website:${{ github.sha }}
+            chamzajutt8-cmd/my-website:latest
+            chamzajutt8-cmd/my-website:${{ github.sha }}
