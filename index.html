@@ -1,16 +1,829 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Website</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Mart — Online Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#F85606;
+    --orange-dark:#D94900;
+    --orange-light:#FFF1E8;
+    --yellow:#FFC300;
+    --ink:#1A1A1A;
+    --grey:#767676;
+    --grey-light:#F4F4F4;
+    --line:#E9E9E9;
+    --green:#2E9B4F;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:#F1F1F1;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{display:block; width:100%; height:100%; object-fit:cover;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 24px;}
+  button{font-family:inherit; cursor:pointer;}
+
+  /* ===== TOP UTILITY BAR ===== */
+  .util-bar{
+    background:var(--ink);
+    color:#ccc;
+    font-size:0.75rem;
+  }
+  .util-bar .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:6px 24px;
+  }
+  .util-links{display:flex; gap:18px;}
+  .util-links a:hover{color:var(--white);}
+
+  /* ===== HEADER ===== */
+  header{
+    background:var(--orange);
+    padding:16px 0;
+    position:sticky; top:0; z-index:100;
+  }
+  .header-row{
+    display:flex; align-items:center; gap:24px;
+  }
+  .logo{
+    font-size:1.6rem; font-weight:800; color:var(--white);
+    letter-spacing:-0.02em;
+    flex-shrink:0; cursor:pointer;
+  }
+  .logo span{color:var(--ink);}
+  .search-box{
+    flex:1;
+    display:flex;
+    background:var(--white);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .search-box input{
+    flex:1; border:none; outline:none;
+    padding:11px 16px;
+    font-size:0.9rem;
+    font-family:inherit;
+  }
+  .search-box button{
+    background:var(--orange-dark);
+    border:none;
+    padding:0 20px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .header-actions{
+    display:flex; align-items:center; gap:22px;
+    color:var(--white);
+    flex-shrink:0;
+  }
+  .header-action{
+    display:flex; flex-direction:column; align-items:center;
+    font-size:0.68rem; font-weight:600;
+    position:relative;
+    gap:2px; cursor:pointer;
+  }
+  .header-action svg{width:22px; height:22px;}
+  .cart-count{
+    position:absolute; top:-4px; right:-8px;
+    background:var(--yellow); color:var(--ink);
+    font-size:0.6rem; font-weight:800;
+    border-radius:50%;
+    width:16px; height:16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ===== CATEGORY NAV ===== */
+  .cat-nav{
+    background:var(--white);
+    border-bottom:1px solid var(--line);
+  }
+  .cat-nav .wrap{
+    display:flex; gap:28px;
+    overflow-x:auto;
+    padding:12px 24px;
+  }
+  .cat-nav a{
+    font-size:0.82rem; font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+    padding-bottom:4px;
+    border-bottom:2px solid transparent;
+    cursor:pointer;
+  }
+  .cat-nav a:hover, .cat-nav a.active{
+    color:var(--orange);
+    border-color:var(--orange);
+  }
+
+  /* ===== HERO BANNER ===== */
+  .hero-banner{
+    margin:22px auto 0;
+    max-width:1240px;
+    padding:0 24px;
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:16px;
+  }
+  .hero-main{
+    position:relative;
+    border-radius:8px;
+    overflow:hidden;
+    aspect-ratio:2.3/1;
+    background:linear-gradient(120deg,#2B2118,#4A3624);
+  }
+  .hero-main img{opacity:0.55;}
+  .hero-main-text{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:8% 6%;
+    color:var(--white);
+  }
+  .hero-main-text .eyebrow{
+    font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--yellow); font-weight:700;
+  }
+  .hero-main-text h1{font-size:2rem; font-weight:800; margin-top:8px; max-width:420px;}
+  .hero-main-text p{font-size:0.85rem; margin-top:8px; opacity:0.9;}
+  .hero-main-text .cta{
+    margin-top:16px;
+    display:inline-block;
+    background:var(--orange);
+    color:var(--white);
+    padding:10px 22px;
+    border-radius:4px;
+    font-size:0.82rem; font-weight:700;
+    width:fit-content; cursor:pointer;
+  }
+  .hero-side{
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .hero-side-card{
+    position:relative;
+    border-radius:8px;
+    overflow:hidden;
+    flex:1;
+    background:var(--grey-light);
+  }
+  .hero-side-card img{opacity:0.85;}
+  .hero-side-text{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:16px;
+    background:linear-gradient(0deg, rgba(0,0,0,0.55), transparent 60%);
+    color:var(--white);
+  }
+  .hero-side-text .tag{font-size:0.68rem; font-weight:700; color:var(--yellow); text-transform:uppercase;}
+  .hero-side-text h4{font-size:1.1rem; font-weight:800; margin-top:4px;}
+
+  /* ===== FLASH SALE ===== */
+  .flash-section{
+    max-width:1240px; margin:26px auto 0; padding:0 24px;
+  }
+  .flash-head{
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:14px;
+  }
+  .flash-head h2{
+    font-size:1.15rem; font-weight:800;
+    display:flex; align-items:center; gap:8px;
+    color:var(--orange-dark);
+  }
+  .flash-timer{
+    display:flex; gap:4px; align-items:center;
+    font-family:monospace; font-size:0.78rem; font-weight:700;
+  }
+  .flash-timer span{
+    background:var(--ink); color:var(--white);
+    padding:3px 6px; border-radius:3px;
+  }
+  .flash-see-all{
+    margin-left:auto;
+    font-size:0.8rem; font-weight:600; color:var(--orange); cursor:pointer;
+  }
+
+  /* ===== SECTION HEAD ===== */
+  .section{
+    max-width:1240px; margin:34px auto 0; padding:0 24px;
+  }
+  .section-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .section-head h2{font-size:1.15rem; font-weight:800;}
+  .section-head .see-all{font-size:0.8rem; font-weight:600; color:var(--orange);}
+
+  /* ===== FILTER CHIPS ===== */
+  .chip-row{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .chip{
+    font-size:0.82rem; font-weight:600;
+    padding:8px 18px;
+    border-radius:18px;
+    background:var(--white);
+    border:1px solid var(--line);
+    color:var(--ink);
+  }
+  .chip.active{
+    background:var(--orange-light);
+    color:var(--orange-dark);
+    border-color:var(--orange);
+  }
+
+  /* ===== PRODUCT GRID ===== */
+  .product-grid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:14px;
+  }
+  .pcard{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:box-shadow .2s, transform .2s;
+  }
+  .pcard:hover{
+    box-shadow:0 10px 22px rgba(0,0,0,0.08);
+    transform:translateY(-2px);
+  }
+  .pcard-img{
+    aspect-ratio:1/1;
+    position:relative;
+    background:var(--grey-light);
+  }
+  .discount-badge{
+    position:absolute; top:8px; left:8px;
+    background:var(--orange);
+    color:var(--white);
+    font-size:0.65rem; font-weight:800;
+    padding:3px 7px;
+    border-radius:3px;
+  }
+  .wishlist-btn{
+    position:absolute; top:8px; right:8px;
+    width:28px; height:28px;
+    background:rgba(255,255,255,0.9);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:none; cursor:pointer;
+  }
+  .wishlist-btn.active svg{
+    fill: #e0245e;
+    stroke: #e0245e;
+  }
+  .pcard-body{
+    padding:12px 13px 14px;
+    display:flex; flex-direction:column; flex:1;
+  }
+  .pcard-name{
+    font-size:0.85rem; font-weight:500;
+    line-height:1.35;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    min-height:2.3em;
+  }
+  .pcard-price-row{
+    display:flex; align-items:baseline; gap:7px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .price-now{font-size:1.05rem; font-weight:800; color:var(--orange-dark);}
+  .price-was{font-size:0.75rem; color:var(--grey); text-decoration:line-through;}
+  .pcard-meta{
+    display:flex; align-items:center; gap:6px;
+    margin-top:7px;
+    font-size:0.72rem; color:var(--grey);
+  }
+  .stars{color:var(--yellow); font-size:0.75rem; letter-spacing:1px;}
+  .add-cart-btn{
+    margin-top:auto;
+    padding:8px 0;
+    background:var(--orange-light);
+    color:var(--orange-dark);
+    border:1px solid var(--orange);
+    border-radius:4px;
+    font-size:0.8rem; font-weight:700;
+    transition:background .2s, color .2s;
+  }
+  .add-cart-btn:hover{
+    background:var(--orange);
+    color:var(--white);
+  }
+
+  /* ===== CART DRAWER ===== */
+  .cart-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    z-index:200; display:none; opacity:0; transition:opacity .3s;
+  }
+  .cart-overlay.open{display:block; opacity:1;}
+  .cart-drawer{
+    position:fixed; top:0; right:-400px; width:100%; max-width:400px; height:100vh;
+    background:var(--white); z-index:201;
+    display:flex; flex-direction:column;
+    transition:right .3s ease;
+    box-shadow:-5px 0 25px rgba(0,0,0,0.15);
+  }
+  .cart-drawer.open{right:0;}
+  .cart-header{
+    padding:18px 20px; background:var(--ink); color:var(--white);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .cart-header h3{font-size:1.1rem; font-weight:700;}
+  .close-cart{background:none; border:none; color:var(--white); font-size:1.4rem;}
+  .cart-body{
+    flex:1; overflow-y:auto; padding:20px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .cart-item{
+    display:flex; gap:12px; border-bottom:1px solid var(--line); padding-bottom:12px;
+  }
+  .cart-item img{width:60px; height:60px; border-radius:4px;}
+  .cart-item-info{flex:1;}
+  .cart-item-title{font-size:0.82rem; font-weight:600;}
+  .cart-item-price{font-size:0.85rem; font-weight:800; color:var(--orange-dark); margin-top:4px;}
+  .cart-item-qty{display:flex; align-items:center; gap:8px; margin-top:6px;}
+  .qty-btn{
+    width:22px; height:22px; border:1px solid var(--line); background:var(--grey-light);
+    border-radius:3px; font-weight:700;
+  }
+  .cart-footer{
+    padding:20px; border-top:1px solid var(--line); background:var(--grey-light);
+  }
+  .cart-total{
+    display:flex; justify-content:space-between; font-size:1.1rem; font-weight:800;
+    margin-bottom:16px;
+  }
+  .checkout-btn{
+    width:100%; padding:12px; background:var(--orange); color:var(--white);
+    border:none; border-radius:4px; font-weight:700; font-size:0.95rem;
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    margin-top:56px;
+    background:#2A2A2A;
+    color:#ccc;
+    padding:48px 0 20px;
+  }
+  .footer-grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1fr;
+    gap:32px;
+  }
+  .footer-brand .logo{color:var(--white); margin-bottom:12px;}
+  .footer-brand p{font-size:0.82rem; line-height:1.6; color:#999; max-width:280px;}
+  .footer-col h4{
+    color:var(--white); font-size:0.82rem; font-weight:700;
+    margin-bottom:14px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .footer-col a{
+    display:block; font-size:0.82rem; color:#aaa; margin-bottom:10px;
+  }
+  .footer-col a:hover{color:var(--white);}
+  .footer-bottom{
+    max-width:1240px; margin:36px auto 0; padding:20px 24px 0;
+    border-top:1px solid #444;
+    font-size:0.75rem; color:#888;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  @media (max-width:1000px){
+    .product-grid{grid-template-columns:repeat(3, 1fr);}
+    .hero-banner{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:640px){
+    .product-grid{grid-template-columns:repeat(2, 1fr);}
+    .header-row{flex-wrap:wrap;}
+    .logo{order:1;}
+    .search-box{order:3; flex:1 1 100%;}
+    .header-actions{order:2; margin-left:auto;}
+    .footer-grid{grid-template-columns:1fr;}
+  }
+</style>
 </head>
 <body>
 
-    <h1>Hello, World!</h1>
-    <p>This is my first website.</p>
+<div class="util-bar">
+  <div class="wrap">
+    <span>Deliver to: Lahore, Pakistan</span>
+    <div class="util-links">
+      <a href="#">Track Order</a>
+      <a href="#">Help Center</a>
+      <a href="#">Sell on Aura Mart</a>
+    </div>
+  </div>
+</div>
 
-    <button onclick="hello()">Click Me</button>
+<header>
+  <div class="wrap header-row">
+    <div class="logo" id="logo">AURA<span>MART</span></div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search for earbuds, jackets, electronics...">
+      <button id="searchBtn" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+    </div>
+    <div class="header-actions">
+      <div class="header-action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Account
+      </div>
+      <div class="header-action" id="wishlistTrigger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        <span class="cart-count" id="wishlistCount">0</span>
+        Saved
+      </div>
+      <div class="header-action" id="cartTrigger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+        Cart
+      </div>
+    </div>
+  </div>
+</header>
 
-    <script src="script.js"></script>
+<nav class="cat-nav">
+  <div class="wrap" id="catNav">
+    <a data-cat="all" class="active">All Categories</a>
+    <a data-cat="electronics">Electronics</a>
+    <a data-cat="earbuds">Earbuds & Audio</a>
+    <a data-cat="jackets">Jackets & Outerwear</a>
+    <a data-cat="footwear">Footwear</a>
+    <a data-cat="home">Home & Living</a>
+    <a data-cat="beauty">Beauty</a>
+  </div>
+</nav>
+
+<div class="hero-banner">
+  <div class="hero-main">
+    <img src="https://loremflickr.com/900/400/electronics,shopping/all?lock=101" alt="">
+    <div class="hero-main-text">
+      <div class="eyebrow">Season Sale</div>
+      <h1>Up to 60% off Electronics & Jackets</h1>
+      <p>Free shipping on orders over Rs 3,000. Limited time only.</p>
+      <span class="cta" id="heroCta">Shop the Sale</span>
+    </div>
+  </div>
+  <div class="hero-side">
+    <div class="hero-side-card">
+      <img src="https://loremflickr.com/500/240/earbuds,gadget/all?lock=102" alt="">
+      <div class="hero-side-text">
+        <span class="tag">New Arrival</span>
+        <h4>Earbuds from Rs 1,990</h4>
+      </div>
+    </div>
+    <div class="hero-side-card">
+      <img src="https://loremflickr.com/500/240/jacket,winter/all?lock=103" alt="">
+      <div class="hero-side-text">
+        <span class="tag">Trending</span>
+        <h4>Winter Jackets -40%</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flash-section">
+  <div class="flash-head">
+    <h2>⚡ Flash Sale</h2>
+    <div class="flash-timer">
+      <span id="hours">02</span>:
+      <span id="minutes">14</span>:
+      <span id="seconds">39</span>
+    </div>
+    <span class="flash-see-all">See All ›</span>
+  </div>
+</div>
+
+<section class="section" id="shop">
+  <div class="section-head">
+    <h2 id="sectionTitle">All Products</h2>
+    <span class="see-all" id="filterCount">0 items</span>
+  </div>
+  <div class="chip-row" id="filterTabs">
+    <button class="chip active" data-filter="all">All</button>
+    <button class="chip" data-filter="electronics">Electronics</button>
+    <button class="chip" data-filter="earbuds">Earbuds & Audio</button>
+    <button class="chip" data-filter="jackets">Jackets & Outerwear</button>
+    <button class="chip" data-filter="footwear">Footwear</button>
+    <button class="chip" data-filter="home">Home & Living</button>
+    <button class="chip" data-filter="beauty">Beauty</button>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="close-cart" id="closeCart">✕</button>
+  </div>
+  <div class="cart-body" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cartTotal">Rs 0</span>
+    </div>
+    <button class="checkout-btn" onclick="alert('Proceeding to checkout!')">Checkout Now</button>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo">AURA<span style="color:#F85606">MART</span></div>
+      <p>Your one-stop online store for electronics, fashion, and everyday essentials — fast delivery, easy returns.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="#shop">Electronics</a>
+      <a href="#shop">Earbuds & Audio</a>
+      <a href="#shop">Jackets & Outerwear</a>
+      <a href="#shop">Footwear</a>
+    </div>
+    <div class="footer-col">
+      <h4>Customer Care</h4>
+      <a href="#">Track My Order</a>
+      <a href="#">Returns & Refunds</a>
+      <a href="#">Shipping Info</a>
+      <a href="#">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="#">hello@auramart.com</a>
+      <a href="#">+92 300 1234567</a>
+      <a href="#">Lahore, Pakistan</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Aura Mart</span>
+    <span>Fully Functional E-Commerce Prototype</span>
+  </div>
+</footer>
+
+<script>
+const products = [
+  {id:1, name:"Smart Watch, Fitness Tracker & Heart Rate", price:5490, was:9990, cat:"electronics", rating:4.2, sold:"4.7k", img:"smartwatch,tech", lock:6},
+  {id:2, name:"Portable Bluetooth Speaker, Waterproof", price:2190, was:3590, cat:"electronics", rating:4.3, sold:"3.8k", img:"speaker,tech", lock:10},
+  {id:3, name:"27-inch LED Monitor, Full HD", price:18900, was:24900, cat:"electronics", rating:4.6, sold:"640", img:"monitor,computer", lock:20},
+  {id:4, name:"Wireless Gaming Mouse, RGB", price:2290, was:3200, cat:"electronics", rating:4.4, sold:"2.1k", img:"mouse,gaming", lock:21},
+  {id:5, name:"Power Bank 20000mAh, Fast Charging", price:2890, was:4200, cat:"electronics", rating:4.5, sold:"5.9k", img:"powerbank,charger", lock:22},
+  {id:6, name:"Smart LED Desk Lamp, USB Charging", price:1690, was:2490, cat:"electronics", rating:4.1, sold:"1.3k", img:"desklamp,led", lock:23},
+  {id:7, name:"Wireless Bluetooth Earbuds, Noise Cancelling", price:2450, was:4900, cat:"earbuds", rating:4.4, sold:"3.4k", img:"earbuds,tech", lock:2},
+  {id:8, name:"Over-Ear Headphones, Bass Boost", price:3990, was:5990, cat:"earbuds", rating:4.5, sold:"2.7k", img:"headphones,audio", lock:24},
+  {id:9, name:"True Wireless Earbuds, 30hr Battery", price:1990, was:3490, cat:"earbuds", rating:4.3, sold:"6.5k", img:"earbuds,white", lock:25},
+  {id:10, name:"Gaming Headset with Mic, RGB Lighting", price:3290, was:4990, cat:"earbuds", rating:4.2, sold:"1.8k", img:"headset,gaming", lock:26},
+  {id:11, name:"Men's Waxed Field Jacket, Water Resistant", price:8990, was:14990, cat:"jackets", rating:4.6, sold:"1.2k", img:"jacket,fashion", lock:1},
+  {id:12, name:"Puffer Jacket, Windproof, Unisex", price:4590, was:6990, cat:"jackets", rating:4.4, sold:"2.6k", img:"pufferjacket,winter", lock:27},
+  {id:13, name:"Denim Jacket, Classic Fit", price:3290, was:4790, cat:"jackets", rating:4.3, sold:"1.9k", img:"denimjacket,fashion", lock:28},
+  {id:14, name:"Merino Wool Crewneck Sweater", price:3490, was:5290, cat:"jackets", rating:4.4, sold:"980", img:"sweater,knitwear", lock:9},
+  {id:15, name:"Hooded Rain Jacket, Packable", price:3990, was:5990, cat:"jackets", rating:4.2, sold:"1.1k", img:"rainjacket,outdoor", lock:29},
+  {id:16, name:"Leather Biker Jacket, Genuine Leather", price:12900, was:18900, cat:"jackets", rating:4.7, sold:"430", img:"leatherjacket,fashion", lock:30},
+  {id:17, name:"Men's Running Shoes, Breathable Mesh", price:3490, was:5490, cat:"footwear", rating:4.5, sold:"3.2k", img:"runningshoes,sport", lock:31},
+  {id:18, name:"Women's Canvas Sneakers, Slip-On", price:2290, was:3290, cat:"footwear", rating:4.3, sold:"2.8k", img:"sneakers,shoes", lock:32},
+  {id:19, name:"Leather Chelsea Boots", price:5990, was:8490, cat:"footwear", rating:4.6, sold:"760", img:"chelseaboots,leather", lock:33},
+  {id:20, name:"Kids Velcro Sports Shoes", price:1690, was:2490, cat:"footwear", rating:4.4, sold:"1.5k", img:"kidsshoes,sport", lock:34},
+  {id:21, name:"Ceramic Coffee Mug Set of 6, Matte Finish", price:1350, was:1990, cat:"home", rating:4.7, sold:"860", img:"ceramic,mug", lock:3},
+  {id:22, name:"Non-Stick Frying Pan, 28cm Induction Base", price:1890, was:2790, cat:"home", rating:4.6, sold:"1.9k", img:"frypan,kitchen", lock:7},
+  {id:23, name:"Cotton Bedsheet Set, King Size, 4 Piece", price:2450, was:3990, cat:"home", rating:4.6, sold:"1.4k", img:"bedsheet,textile", lock:11},
+  {id:24, name:"Scented Soy Candle, 3-Pack", price:1190, was:1790, cat:"home", rating:4.5, sold:"2.2k", img:"candle,home", lock:35},
+  {id:25, name:"Memory Foam Pillow, Orthopedic", price:1990, was:2890, cat:"home", rating:4.4, sold:"1.6k", img:"pillow,bedroom", lock:36},
+  {id:26, name:"Stainless Steel Water Bottle, 1L", price:890, was:1390, cat:"home", rating:4.6, sold:"3.9k", img:"waterbottle,steel", lock:37},
+  {id:27, name:"Matte Liquid Lipstick, Long Lasting", price:690, was:1200, cat:"beauty", rating:4.3, sold:"5.1k", img:"lipstick,cosmetics", lock:4},
+  {id:28, name:"Hydrating Face Serum with Vitamin C", price:990, was:1650, cat:"beauty", rating:4.5, sold:"6.2k", img:"serum,skincare", lock:8},
+  {id:29, name:"Perfume Body Mist, Floral Scent, 200ml", price:850, was:1400, cat:"beauty", rating:4.4, sold:"2.9k", img:"perfume,bottle", lock:12},
+  {id:30, name:"Aloe Vera Moisturizing Face Cream", price:590, was:990, cat:"beauty", rating:4.6, sold:"4.4k", img:"facecream,skincare", lock:38},
+  {id:31, name:"Charcoal Face Mask, Deep Cleansing", price:490, was:790, cat:"beauty", rating:4.3, sold:"3.1k", img:"facemask,beauty", lock:39},
+  {id:32, name:"Hair Straightener, Ceramic Plates", price:2490, was:3690, cat:"beauty", rating:4.2, sold:"1.7k", img:"hairstraightener,tool", lock:40}
+];
+
+// APP STATE
+let cart = JSON.parse(localStorage.getItem('auramart_cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('auramart_wishlist')) || [];
+let activeCategory = 'all';
+
+// UTILITIES
+const pct = (now, was) => Math.round((1 - now/was) * 100);
+const stars = (r) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
+const fmt = (n) => "Rs " + n.toLocaleString();
+
+// DOM ELEMENTS
+const grid = document.getElementById('productGrid');
+const countEl = document.getElementById('filterCount');
+const searchInput = document.getElementById('searchInput');
+const cartTrigger = document.getElementById('cartTrigger');
+const cartDrawer = document.getElementById('cartDrawer');
+const cartOverlay = document.getElementById('cartOverlay');
+const closeCart = document.getElementById('closeCart');
+const cartItemsContainer = document.getElementById('cartItems');
+const cartTotalEl = document.getElementById('cartTotal');
+const cartCountEl = document.getElementById('cartCount');
+const wishlistCountEl = document.getElementById('wishlistCount');
+
+// RENDER PRODUCTS
+function renderProducts(list) {
+  countEl.textContent = list.length + (list.length === 1 ? ' item' : ' items');
+  if(list.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--grey)">No products found matching your criteria.</div>`;
+    return;
+  }
+  
+  grid.innerHTML = list.map(p => {
+    const isSaved = wishlist.includes(p.id);
+    return `
+      <div class="pcard">
+        <div class="pcard-img">
+          <img src="https://loremflickr.com/400/400/${p.img}/all?lock=${p.lock}" alt="${p.name}" loading="lazy">
+          <span class="discount-badge">-${pct(p.price, p.was)}%</span>
+          <button class="wishlist-btn ${isSaved ? 'active' : ''}" onclick="toggleWishlist(${p.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#767676" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          </button>
+        </div>
+        <div class="pcard-body">
+          <div class="pcard-name">${p.name}</div>
+          <div class="pcard-price-row">
+            <span class="price-now">${fmt(p.price)}</span>
+            <span class="price-was">${fmt(p.was)}</span>
+          </div>
+          <div class="pcard-meta">
+            <span class="stars">${stars(p.rating)}</span>
+            <span>(${p.sold} sold)</span>
+          </div>
+          <button class="add-cart-btn" onclick="addToCart(${p.id})">Add To Cart</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// FILTER LOGIC
+function applyFilters() {
+  const query = searchInput.value.toLowerCase().trim();
+  const filtered = products.filter(p => {
+    const matchesCat = activeCategory === 'all' || p.cat === activeCategory;
+    const matchesSearch = p.name.toLowerCase().includes(query);
+    return matchesCat && matchesSearch;
+  });
+  renderProducts(filtered);
+}
+
+// CATEGORY SELECTION
+function setCategory(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('.chip, .cat-nav a').forEach(el => {
+    const targetCat = el.dataset.filter || el.dataset.cat;
+    if(targetCat === cat) el.classList.add('active');
+    else el.classList.remove('active');
+  });
+  applyFilters();
+}
+
+document.getElementById('filterTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if(btn) setCategory(btn.dataset.filter);
+});
+
+document.getElementById('catNav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if(link) setCategory(link.dataset.cat);
+});
+
+// SEARCH BAR LOGIC
+searchInput.addEventListener('input', applyFilters);
+document.getElementById('searchBtn').addEventListener('click', applyFilters);
+
+// WISHLIST LOGIC
+function toggleWishlist(id) {
+  if(wishlist.includes(id)) {
+    wishlist = wishlist.filter(item => item !== id);
+  } else {
+    wishlist.push(id);
+  }
+  localStorage.setItem('auramart_wishlist', JSON.stringify(wishlist));
+  updateWishlistUI();
+  applyFilters();
+}
+
+function updateWishlistUI() {
+  wishlistCountEl.textContent = wishlist.length;
+}
+
+// CART LOGIC
+function addToCart(id) {
+  const item = cart.find(c => c.id === id);
+  if(item) {
+    item.qty += 1;
+  } else {
+    cart.push({id, qty: 1});
+  }
+  saveAndUpdateCart();
+  openCartDrawer();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if(item) {
+    item.qty += delta;
+    if(item.qty <= 0) {
+      cart = cart.filter(c => c.id !== id);
+    }
+  }
+  saveAndUpdateCart();
+}
+
+function saveAndUpdateCart() {
+  localStorage.setItem('auramart_cart', JSON.stringify(cart));
+  renderCart();
+}
+
+function renderCart() {
+  let total = 0;
+  let itemCount = 0;
+
+  if(cart.length === 0) {
+    cartItemsContainer.innerHTML = `<p style="text-align:center; color:var(--grey); margin-top:20px;">Your cart is empty.</p>`;
+  } else {
+    cartItemsContainer.innerHTML = cart.map(item => {
+      const p = products.find(prod => prod.id === item.id);
+      total += p.price * item.qty;
+      itemCount += item.qty;
+      return `
+        <div class="cart-item">
+          <img src="https://loremflickr.com/400/400/${p.img}/all?lock=${p.lock}" alt="${p.name}">
+          <div class="cart-item-info">
+            <div class="cart-item-title">${p.name}</div>
+            <div class="cart-item-price">${fmt(p.price)}</div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="changeQty(${p.id}, -1)">-</button>
+              <span>${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${p.id}, 1)">+</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  cartTotalEl.textContent = fmt(total);
+  cartCountEl.textContent = itemCount;
+}
+
+function openCartDrawer() {
+  cartOverlay.classList.add('open');
+  cartDrawer.classList.add('open');
+}
+
+function closeCartDrawer() {
+  cartOverlay.classList.remove('open');
+  cartDrawer.classList.remove('open');
+}
+
+cartTrigger.addEventListener('click', openCartDrawer);
+closeCart.addEventListener('click', closeCartDrawer);
+cartOverlay.addEventListener('click', closeCartDrawer);
+
+// FLASH SALE COUNTDOWN TIMER
+function startTimer() {
+  let time = 8079; // 2h 14m 39s in seconds
+  setInterval(() => {
+    time--;
+    if(time < 0) time = 8079;
+    const h = String(Math.floor(time / 3600)).padStart(2, '0');
+    const m = String(Math.floor((time % 3600) / 60)).padStart(2, '0');
+    const s = String(time % 60).padStart(2, '0');
+    document.getElementById('hours').textContent = h;
+    document.getElementById('minutes').textContent = m;
+    document.getElementById('seconds').textContent = s;
+  }, 1000);
+}
+
+// INITIALIZATION
+document.getElementById('logo').addEventListener('click', () => {
+  searchInput.value = '';
+  setCategory('all');
+});
+
+document.getElementById('heroCta').addEventListener('click', () => {
+  document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+});
+
+renderProducts(products);
+renderCart();
+updateWishlistUI();
+startTimer();
+</script>
+
 </body>
 </html>
