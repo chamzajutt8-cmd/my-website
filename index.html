@@ -23,7 +23,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
   body { background: #f8f8f8; color: var(--ink); }
 
-  /* Login Modal Overlay */
+  /* Modals & Overlays */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -37,17 +37,42 @@
     background: #fff;
     padding: 30px;
     border-radius: 8px;
-    width: 350px;
+    width: 400px;
+    max-width: 90%;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
   }
   .modal-card h2 { margin-bottom: 15px; color: var(--ink); text-align: center; }
-  .modal-card label { display: block; margin: 10px 0 5px; font-size: 14px; color: var(--grey); }
-  .modal-card input { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 4px; outline: none; }
-  .modal-card input:focus { border-color: var(--orange); }
+  .modal-card label { display: block; margin: 10px 0 5px; font-size: 13px; color: var(--grey); font-weight: 600; }
+  .modal-card input, .modal-card textarea, .modal-card select { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 4px; outline: none; font-size: 14px; }
+  .modal-card input:focus, .modal-card textarea:focus { border-color: var(--orange); }
   .modal-card button[type="submit"] { width: 100%; margin-top: 20px; padding: 12px; background: var(--orange); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
   .modal-card button[type="submit"]:hover { background: var(--orange-dark); }
   .close-btn { position: absolute; top: 12px; right: 15px; font-size: 22px; cursor: pointer; border: none; background: none; color: var(--grey); }
+
+  /* Cart Side Drawer */
+  .cart-drawer {
+    position: fixed;
+    top: 0; right: -400px; width: 380px; height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+    z-index: 10000;
+    transition: right 0.3s ease;
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.open { right: 0; }
+  .cart-header { padding: 20px; background: var(--orange); color: #fff; display: flex; justify-content: space-between; align-items: center; }
+  .cart-body { flex: 1; padding: 20px; overflow-y: auto; }
+  .cart-item { display: flex; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 10px; align-items: center; }
+  .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
+  .cart-item-details { flex: 1; }
+  .cart-item-title { font-size: 13px; font-weight: 600; }
+  .cart-item-price { color: var(--orange); font-size: 14px; font-weight: 700; }
+  .cart-footer { padding: 20px; border-top: 1px solid var(--line); background: #fafafa; }
+  .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; margin-bottom: 15px; }
+  .checkout-btn { width: 100%; padding: 12px; background: var(--orange); color: #fff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; }
 
   /* Navigation Header */
   .top-bar { background: #111; color: #ccc; font-size: 12px; padding: 6px 5%; display: flex; justify-content: space-between; }
@@ -59,6 +84,7 @@
   .nav-icons { display: flex; gap: 20px; color: var(--white); }
   .nav-icon-item { text-align: center; color: var(--white); text-decoration: none; font-size: 12px; position: relative; cursor: pointer; }
   .nav-icon-item i { font-size: 20px; display: block; margin-bottom: 2px; }
+  .cart-badge { position: absolute; top: -5px; right: 5px; background: var(--yellow); color: var(--ink); border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
 
   /* Hero & Categories */
   .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80'); background-size: cover; color: var(--white); padding: 60px 5%; text-align: center; }
@@ -91,20 +117,65 @@
     <form id="loginForm" onsubmit="event.preventDefault(); alert('Logged in successfully!'); document.getElementById('loginModal').style.display='none';">
       <label for="email">Email Address</label>
       <input type="email" id="email" placeholder="Enter your email" required>
-      
       <label for="password">Password</label>
       <input type="password" id="password" placeholder="Enter your password" required>
-      
       <button type="submit">Sign In</button>
     </form>
   </div>
 </div>
 
-<div class="top-bar">
-  <span>Deliver to: Lahore, Pakistan</span>
-  <div>
-    <span>Track Order</span> | <span>Help Center</span>
+<div id="checkoutModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="close-btn" onclick="document.getElementById('checkoutModal').style.display='none'">&times;</button>
+    <h2>Delivery Location & Checkout</h2>
+    <form id="checkoutForm" onsubmit="handleOrderSubmit(event)">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" placeholder="John Doe" required>
+      
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="0300-1234567" required>
+      
+      <label for="city">City</label>
+      <select id="city" required>
+        <option value="Lahore">Lahore</option>
+        <option value="Karachi">Karachi</option>
+        <option value="Islamabad">Islamabad</option>
+        <option value="Rawalpindi">Rawalpindi</option>
+        <option value="Faisalabad">Faisalabad</option>
+      </select>
+
+      <label for="address">Full Delivery Address</label>
+      <textarea id="address" rows="3" placeholder="House/Flat No, Street, Area..." required></textarea>
+
+      <label for="payment">Payment Method</label>
+      <select id="payment">
+        <option value="cod">Cash on Delivery (COD)</option>
+        <option value="card">Credit / Debit Card</option>
+      </select>
+      
+      <button type="submit">Confirm Order</button>
+    </form>
   </div>
+</div>
+
+<div id="cartDrawer" class="cart-drawer">
+  <div class="cart-header">
+    <h3>Shopping Cart</h3>
+    <button class="close-btn" style="color:#fff;" onclick="toggleCart(false)">&times;</button>
+  </div>
+  <div class="cart-body" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cartTotal">Rs 0</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<div class="top-bar">
+  <span>Deliver to: Pakistan</span>
+  <div><span>Track Order</span> | <span>Help Center</span></div>
 </div>
 
 <header>
@@ -118,13 +189,10 @@
       <i class="fa-regular fa-user"></i>
       Account
     </a>
-    <a href="#" class="nav-icon-item">
-      <i class="fa-regular fa-heart"></i>
-      Saved
-    </a>
     <a href="#" class="nav-icon-item" id="cartTrigger">
       <i class="fa-solid fa-cart-shopping"></i>
       Cart
+      <span class="cart-badge" id="cartBadge">0</span>
     </a>
   </div>
 </header>
@@ -148,17 +216,16 @@
 </div>
 
 <script>
-// ALL SELLING PRODUCTS DATA RESTORED
 const products = [
   { id: 1, title: 'Wireless Noise Canceling Earbuds', price: 1990, category: 'audio', img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80' },
   { id: 2, title: 'Men Lightweight Puffer Jacket', price: 3490, category: 'clothing', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=500&q=80' },
   { id: 3, title: 'Smart Fitness Watch Series 5', price: 4990, category: 'electronics', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80' },
   { id: 4, title: 'Over-Ear Gaming Headset', price: 2800, category: 'audio', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80' },
   { id: 5, title: 'Winter Fleece Denim Jacket', price: 4200, category: 'clothing', img: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=500&q=80' },
-  { id: 6, title: 'Pro Running Sport Sneakers', price: 3800, category: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80' },
-  { id: 7, title: 'Bluetooth Mini Soundbar Speaker', price: 2500, category: 'audio', img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80' },
-  { id: 8, title: 'Casual Leather Bomber Jacket', price: 5990, category: 'clothing', img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80' }
+  { id: 6, title: 'Pro Running Sport Sneakers', price: 3800, category: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80' }
 ];
+
+let cart = [];
 
 const productGrid = document.getElementById('productGrid');
 const searchInput = document.getElementById('searchInput');
@@ -170,10 +237,80 @@ function renderProducts(list) {
       <div class="card-details">
         <div class="card-title">${p.title}</div>
         <div class="card-price">Rs ${p.price.toLocaleString()}</div>
-        <button onclick="alert('Added to cart!')">Add to Cart</button>
+        <button onclick="addToCart(${p.id})">Add to Cart</button>
       </div>
     </div>
   `).join('');
+}
+
+function addToCart(id) {
+  const item = products.find(p => p.id === id);
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...item, qty: 1 });
+  }
+  updateCartUI();
+  toggleCart(true);
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const cartItemsContainer = document.getElementById('cartItems');
+  const cartBadge = document.getElementById('cartBadge');
+  const cartTotal = document.getElementById('cartTotal');
+
+  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  cartBadge.textContent = totalCount;
+  cartTotal.textContent = `Rs ${totalPrice.toLocaleString()}`;
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = '<p style="text-align:center; color:#777; margin-top:20px;">Your cart is empty.</p>';
+    return;
+  }
+
+  cartItemsContainer.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.img}" alt="${item.title}">
+      <div class="cart-item-details">
+        <div class="cart-item-title">${item.title}</div>
+        <div class="cart-item-price">Rs ${item.price.toLocaleString()} x ${item.qty}</div>
+      </div>
+      <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fa fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+function toggleCart(open) {
+  const drawer = document.getElementById('cartDrawer');
+  if (open) drawer.classList.add('open');
+  else drawer.classList.remove('open');
+}
+
+function openCheckout() {
+  if (cart.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
+  toggleCart(false);
+  document.getElementById('checkoutModal').style.display = 'flex';
+}
+
+function handleOrderSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('fullname').value;
+  const city = document.getElementById('city').value;
+  alert(`Thank you ${name}! Your order has been placed successfully and will be delivered to ${city}.`);
+  cart = [];
+  updateCartUI();
+  document.getElementById('checkoutModal').style.display = 'none';
 }
 
 function setCategory(cat) {
@@ -185,23 +322,17 @@ function setCategory(cat) {
   }
 }
 
-// SEARCH FILTER
+// Event Listeners
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
   renderProducts(products.filter(p => p.title.toLowerCase().includes(query)));
 });
 
-// INITIALIZATION & EVENT LISTENERS
-document.getElementById('logo').addEventListener('click', () => {
-  searchInput.value = '';
-  setCategory('all');
+document.getElementById('cartTrigger').addEventListener('click', (e) => {
+  e.preventDefault();
+  toggleCart(true);
 });
 
-document.getElementById('heroCta').addEventListener('click', () => {
-  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
-});
-
-// ACCOUNT LOGIN MODAL TRIGGER
 document.getElementById('accountTrigger').addEventListener('click', (e) => {
   e.preventDefault();
   document.getElementById('loginModal').style.display = 'flex';
@@ -209,6 +340,5 @@ document.getElementById('accountTrigger').addEventListener('click', (e) => {
 
 renderProducts(products);
 </script>
-
 </body>
 </html>
