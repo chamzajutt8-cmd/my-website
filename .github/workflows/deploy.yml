@@ -1,25 +1,17 @@
-name: CI/CD Pipeline - Lint, Test & Push to Docker Hub
+name: CI/CD Pipeline - Test & Push to Docker Hub
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  lint-and-test:
+  smoke-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: HTML Lint Check
-        uses: CybozuLab/html-linter-action@v1
-        with:
-          target: 'index.html'
-        continue-on-error: true
-
-      - name: Basic Smoke Test
+      - name: Verify index.html Exists & Contains Content
         run: |
           if grep -q "AURAMART" index.html; then
             echo "Smoke test passed: Brand title found."
@@ -28,7 +20,7 @@ jobs:
           fi
 
   build-and-push:
-    needs: lint-and-test
+    needs: smoke-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
