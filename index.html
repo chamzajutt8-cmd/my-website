@@ -17,14 +17,13 @@
     --grey:#767676;
     --grey-light:#F4F4F4;
     --line:#E9E9E9;
-    --green:#2E9B4F;
     --white:#FFFFFF;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
   body { background: #f8f8f8; color: var(--ink); }
 
-  /* Login Modal Styling */
+  /* Login Modal Overlay */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -50,9 +49,9 @@
   .modal-card button[type="submit"]:hover { background: var(--orange-dark); }
   .close-btn { position: absolute; top: 12px; right: 15px; font-size: 22px; cursor: pointer; border: none; background: none; color: var(--grey); }
 
-  /* Header & Navigation */
+  /* Navigation Header */
   .top-bar { background: #111; color: #ccc; font-size: 12px; padding: 6px 5%; display: flex; justify-content: space-between; }
-  header { background: var(--orange); padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; gap: 20px; sticky; top: 0; z-index: 100; }
+  header { background: var(--orange); padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; gap: 20px; position: sticky; top: 0; z-index: 100; }
   .logo { color: var(--white); font-weight: 800; font-size: 24px; text-decoration: none; cursor: pointer; }
   .search-box { flex: 1; max-width: 600px; display: flex; background: var(--white); border-radius: 4px; overflow: hidden; }
   .search-box input { flex: 1; border: none; padding: 10px 15px; outline: none; font-size: 14px; }
@@ -135,6 +134,7 @@
   <button class="category-btn" onclick="setCategory('electronics')">Electronics</button>
   <button class="category-btn" onclick="setCategory('audio')">Earbuds & Audio</button>
   <button class="category-btn" onclick="setCategory('clothing')">Jackets & Outerwear</button>
+  <button class="category-btn" onclick="setCategory('footwear')">Footwear</button>
 </div>
 
 <section class="hero">
@@ -148,12 +148,16 @@
 </div>
 
 <script>
-// PRODUCT DATA
+// ALL SELLING PRODUCTS DATA RESTORED
 const products = [
   { id: 1, title: 'Wireless Noise Canceling Earbuds', price: 1990, category: 'audio', img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80' },
   { id: 2, title: 'Men Lightweight Puffer Jacket', price: 3490, category: 'clothing', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=500&q=80' },
   { id: 3, title: 'Smart Fitness Watch Series 5', price: 4990, category: 'electronics', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80' },
-  { id: 4, title: 'Over-Ear Gaming Headset', price: 2800, category: 'audio', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80' }
+  { id: 4, title: 'Over-Ear Gaming Headset', price: 2800, category: 'audio', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80' },
+  { id: 5, title: 'Winter Fleece Denim Jacket', price: 4200, category: 'clothing', img: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=500&q=80' },
+  { id: 6, title: 'Pro Running Sport Sneakers', price: 3800, category: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80' },
+  { id: 7, title: 'Bluetooth Mini Soundbar Speaker', price: 2500, category: 'audio', img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80' },
+  { id: 8, title: 'Casual Leather Bomber Jacket', price: 5990, category: 'clothing', img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80' }
 ];
 
 const productGrid = document.getElementById('productGrid');
