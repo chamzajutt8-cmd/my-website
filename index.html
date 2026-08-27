@@ -110,6 +110,7 @@
 </head>
 <body>
 
+<!-- Account Login Modal -->
 <div id="loginModal" class="modal-overlay">
   <div class="modal-card">
     <button class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</button>
@@ -124,6 +125,7 @@
   </div>
 </div>
 
+<!-- Checkout Modal -->
 <div id="checkoutModal" class="modal-overlay">
   <div class="modal-card">
     <button class="close-btn" onclick="document.getElementById('checkoutModal').style.display='none'">&times;</button>
@@ -158,6 +160,7 @@
   </div>
 </div>
 
+<!-- Cart Side Drawer -->
 <div id="cartDrawer" class="cart-drawer">
   <div class="cart-header">
     <h3>Shopping Cart</h3>
@@ -173,18 +176,20 @@
   </div>
 </div>
 
+<!-- Top Bar -->
 <div class="top-bar">
   <span>Deliver to: Pakistan</span>
   <div><span>Track Order</span> | <span>Help Center</span></div>
 </div>
 
+<!-- Navigation Header -->
 <header>
   <a class="logo" id="logo">AURAMART</a>
   <div class="search-box">
     <input type="text" id="searchInput" placeholder="Search for earbuds, jackets, electronics...">
     <button><i class="fa fa-search"></i></button>
   </div>
-<div class="nav-icons">
+  <div class="nav-icons">
     <a href="#" class="nav-icon-item" onclick="document.getElementById('loginModal').style.display='flex'; return false;">
       <i class="fa-regular fa-user"></i>
       Account
@@ -194,9 +199,10 @@
       Cart
       <span class="cart-badge" id="cartBadge">0</span>
     </a>
-  </div>  
+  </div>
 </header>
 
+<!-- Categories Bar -->
 <div class="categories">
   <button class="category-btn active" onclick="setCategory('all')">All Categories</button>
   <button class="category-btn" onclick="setCategory('electronics')">Electronics</button>
@@ -205,24 +211,29 @@
   <button class="category-btn" onclick="setCategory('footwear')">Footwear</button>
 </div>
 
+<!-- Hero Banner -->
 <section class="hero">
   <h1>Up to 60% off Electronics & Jackets</h1>
   <p>Free shipping on orders over Rs 3,000. Limited time only.</p>
   <button id="heroCta">Shop the Sale</button>
 </section>
 
+<!-- Product List Container -->
 <div class="container" id="shop">
   <div class="grid" id="productGrid"></div>
 </div>
 
 <script>
+// FULL SELLING PRODUCTS ARRAY (8 ITEMS)
 const products = [
   { id: 1, title: 'Wireless Noise Canceling Earbuds', price: 1990, category: 'audio', img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80' },
   { id: 2, title: 'Men Lightweight Puffer Jacket', price: 3490, category: 'clothing', img: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=500&q=80' },
   { id: 3, title: 'Smart Fitness Watch Series 5', price: 4990, category: 'electronics', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80' },
   { id: 4, title: 'Over-Ear Gaming Headset', price: 2800, category: 'audio', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80' },
   { id: 5, title: 'Winter Fleece Denim Jacket', price: 4200, category: 'clothing', img: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=500&q=80' },
-  { id: 6, title: 'Pro Running Sport Sneakers', price: 3800, category: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80' }
+  { id: 6, title: 'Pro Running Sport Sneakers', price: 3800, category: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80' },
+  { id: 7, title: 'Bluetooth Mini Soundbar Speaker', price: 2500, category: 'audio', img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80' },
+  { id: 8, title: 'Casual Leather Bomber Jacket', price: 5990, category: 'clothing', img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80' }
 ];
 
 let cart = [];
@@ -322,20 +333,20 @@ function setCategory(cat) {
   }
 }
 
-// Event Listeners
+// Search Listener
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
   renderProducts(products.filter(p => p.title.toLowerCase().includes(query)));
 });
 
-document.getElementById('cartTrigger').addEventListener('click', (e) => {
-  e.preventDefault();
-  toggleCart(true);
+// Initialization
+document.getElementById('logo').addEventListener('click', () => {
+  searchInput.value = '';
+  setCategory('all');
 });
 
-document.getElementById('accountTrigger').addEventListener('click', (e) => {
-  e.preventDefault();
-  document.getElementById('loginModal').style.display = 'flex';
+document.getElementById('heroCta').addEventListener('click', () => {
+  document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
 });
 
 renderProducts(products);
