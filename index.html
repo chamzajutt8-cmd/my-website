@@ -37,7 +37,7 @@
     background: #fff;
     padding: 30px;
     border-radius: 8px;
-    width: 400px;
+    width: 420px;
     max-width: 90%;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     position: relative;
@@ -48,9 +48,18 @@
   .modal-card label { display: block; margin: 10px 0 5px; font-size: 13px; color: var(--grey); font-weight: 600; }
   .modal-card input, .modal-card textarea, .modal-card select { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 4px; outline: none; font-size: 14px; }
   .modal-card input:focus, .modal-card textarea:focus { border-color: var(--orange); }
-  .modal-card button[type="submit"] { width: 100%; margin-top: 20px; padding: 12px; background: var(--orange); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
-  .modal-card button[type="submit"]:hover { background: var(--orange-dark); }
+  .modal-card button[type="submit"], .modal-action-btn { width: 100%; margin-top: 15px; padding: 12px; background: var(--orange); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
+  .modal-card button[type="submit"]:hover, .modal-action-btn:hover { background: var(--orange-dark); }
   .close-btn { position: absolute; top: 12px; right: 15px; font-size: 22px; cursor: pointer; border: none; background: none; color: var(--grey); }
+
+  /* Product Quick View Modal specifics */
+  .quick-view-content { display: flex; flex-direction: column; gap: 12px; }
+  .quick-view-content img { width: 100%; height: 220px; object-fit: cover; border-radius: 6px; }
+  .quick-view-title { font-size: 16px; font-weight: 700; }
+  .quick-view-price { color: var(--orange); font-size: 20px; font-weight: 800; }
+  .price-breakdown { background: var(--grey-light); padding: 12px; border-radius: 6px; font-size: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .price-breakdown div { display: flex; justify-content: space-between; }
+  .price-breakdown .total-row { font-weight: 700; border-top: 1px solid var(--line); padding-top: 6px; color: var(--orange-dark); font-size: 16px; }
 
   /* Cart Side Drawer */
   .cart-drawer {
@@ -100,9 +109,11 @@
   .container { padding: 30px 5%; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
   .card { background: var(--white); border-radius: 8px; border: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-  .card img { width: 100%; height: 180px; object-fit: cover; }
+  .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; transition: opacity 0.2s; }
+  .card img:hover { opacity: 0.85; }
   .card-details { padding: 15px; }
-  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; cursor: pointer; }
+  .card-title:hover { color: var(--orange); }
   .card-price { color: var(--orange); font-size: 18px; font-weight: 700; margin-bottom: 10px; }
   .card button { width: 100%; padding: 10px; background: var(--orange-light); color: var(--orange-dark); border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
   .card button:hover { background: var(--orange); color: var(--white); }
@@ -121,6 +132,13 @@
       <input type="password" id="password" placeholder="Enter your password" required>
       <button type="submit">Sign In</button>
     </form>
+  </div>
+</div>
+
+<div id="quickViewModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="close-btn" onclick="document.getElementById('quickViewModal').style.display='none'">&times;</button>
+    <div class="quick-view-content" id="quickViewContent"></div>
   </div>
 </div>
 
@@ -235,14 +253,81 @@ const searchInput = document.getElementById('searchInput');
 function renderProducts(list) {
   productGrid.innerHTML = list.map(p => `
     <div class="card">
-      <img src="${p.img}" alt="${p.title}">
+      <img src="${p.img}" alt="${p.title}" onclick="openQuickView(${p.id})">
       <div class="card-details">
-        <div class="card-title">${p.title}</div>
+        <div class="card-title" onclick="openQuickView(${p.id})">${p.title}</div>
         <div class="card-price">Rs ${p.price.toLocaleString()}</div>
         <button onclick="addToCart(${p.id})">Add to Cart</button>
       </div>
     </div>
   `).join('');
+}
+
+function openQuickView(id) {
+  const p = products.find(prod => prod.id === id);
+  const modalContent = document.getElementById('quickViewContent');
+  
+  modalContent.innerHTML = `
+    <img src="${p.img}" alt="${p.title}">
+    <div class="quick-view-title">${p.title}</div>
+    <div class="quick-view-price">Rs ${p.price.toLocaleString()}</div>
+    
+    <label for="qualitySelect">Select Quality Variant:</label>
+    <select id="qualitySelect" onchange="updateQuickViewTotals(${p.price})">
+      <option value="standard" data-mult="1">Standard Quality</option>
+      <option value="premium" data-mult="1.3">Premium Grade (+30%)</option>
+      <option value="luxury" data-mult="1.6">Luxury Edition (+60%)</option>
+    </select>
+
+    <label for="qtySelect">Quantity:</label>
+    <input type="number" id="qtySelect" value="1" min="1" max="10" onchange="updateQuickViewTotals(${p.price})">
+
+    <div class="price-breakdown">
+      <div><span>Base Price:</span> <span id="qvBase">Rs ${p.price.toLocaleString()}</span></div>
+      <div><span>Delivery Charges:</span> <span id="qvCharges">Rs 200</span></div>
+      <div class="total-row"><span>Total Price:</span> <span id="qvTotal">Rs ${(p.price + 200).toLocaleString()}</span></div>
+    </div>
+
+    <button class="modal-action-btn" onclick="orderNowFromQuickView(${p.id})">Order Now</button>
+  `;
+
+  document.getElementById('quickViewModal').style.display = 'flex';
+}
+
+function updateQuickViewTotals(basePrice) {
+  const qualitySelect = document.getElementById('qualitySelect');
+  const qtyInput = document.getElementById('qtySelect');
+  
+  const multiplier = parseFloat(qualitySelect.options[qualitySelect.selectedIndex].getAttribute('data-mult'));
+  const qty = parseInt(qtyInput.value) || 1;
+  
+  const adjustedUnit = Math.round(basePrice * multiplier);
+  const subtotal = adjustedUnit * qty;
+  const delivery = subtotal > 3000 ? 0 : 200;
+  const finalTotal = subtotal + delivery;
+
+  document.getElementById('qvBase').textContent = `Rs ${subtotal.toLocaleString()}`;
+  document.getElementById('qvCharges').textContent = delivery === 0 ? 'Free' : `Rs ${delivery}`;
+  document.getElementById('qvTotal').textContent = `Rs ${finalTotal.toLocaleString()}`;
+}
+
+function orderNowFromQuickView(id) {
+  const p = products.find(prod => prod.id === id);
+  const qualitySelect = document.getElementById('qualitySelect');
+  const qtyInput = document.getElementById('qtySelect');
+  
+  const qualityText = qualitySelect.options[qualitySelect.selectedIndex].text;
+  const multiplier = parseFloat(qualitySelect.options[qualitySelect.selectedIndex].getAttribute('data-mult'));
+  const qty = parseInt(qtyInput.value) || 1;
+  
+  const adjustedPrice = Math.round(p.price * multiplier);
+
+  // Add item with chosen quality to cart and open checkout
+  cart.push({ ...p, title: `${p.title} (${qualityText})`, price: adjustedPrice, qty: qty });
+  updateCartUI();
+  
+  document.getElementById('quickViewModal').style.display = 'none';
+  openCheckout();
 }
 
 function addToCart(id) {
@@ -324,7 +409,6 @@ function setCategory(cat) {
   }
 }
 
-// Listeners
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
   renderProducts(products.filter(p => p.title.toLowerCase().includes(query)));
