@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -252,7 +251,8 @@ const productGrid = document.getElementById('productGrid');
 const searchInput = document.getElementById('searchInput');
 
 function renderProducts(list) {
-  productGrid.innerHTML = list.map(p => `    <div class="card">
+  productGrid.innerHTML = list.map(p => `
+    <div class="card">
       <img src="${p.img}" alt="${p.title}" onclick="openQuickView(${p.id})">
       <div class="card-details">
         <div class="card-title" onclick="openQuickView(${p.id})">${p.title}</div>
@@ -322,7 +322,6 @@ function orderNowFromQuickView(id) {
   
   const adjustedPrice = Math.round(p.price * multiplier);
 
-  // Add item with chosen quality to cart and open checkout
   cart.push({ ...p, title: `${p.title} (${qualityText})`, price: adjustedPrice, qty: qty });
   updateCartUI();
   
